@@ -1,6 +1,6 @@
-const express = require('express');
-const http = require('http');
-const { WebSocketServer, WebSocket } = require('ws');
+import express from 'express';
+import http from 'node:http';
+import { WebSocketServer, WebSocket } from 'ws';
 
 const PORT = process.env.HUB_PORT ? Number(process.env.HUB_PORT) : 8080;
 const HOST = process.env.HUB_HOST || '127.0.0.1';

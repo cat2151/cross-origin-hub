@@ -63,8 +63,9 @@
 
     <div id="log" aria-live="polite"></div>
 
-    <script src="/cross-origin-hub.js"></script>
-    <script>
+    <script type="module">
+      import CrossOriginHub from '../cross-origin-hub.js';
+
       const statusEl = document.getElementById('status');
       const logEl = document.getElementById('log');
       const messageInput = document.getElementById('message');

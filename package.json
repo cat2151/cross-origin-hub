@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/hub-server.js",
     "demo": "node scripts/demo-servers.js",
+    "all": "node scripts/run-all.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
     "test": "echo \"No automated tests defined\""
   },
   "repository": {
@@ -15,7 +17,10 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "type": "commonjs",
+  "type": "module",
+  "bin": {
+    "cross-origin-hub": "./scripts/run-all.mjs"
+  },
   "bugs": {
     "url": "https://github.com/cat2151/cross-origin-hub/issues"
   },

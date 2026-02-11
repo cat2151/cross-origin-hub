@@ -63,8 +63,9 @@
 
     <div id="log" aria-live="polite"></div>
 
-    <script src="/cross-origin-hub.js"></script>
-    <script>
+    <script type="module">
+      import CrossOriginHub from '../cross-origin-hub.js';
+
       const statusEl = document.getElementById('status');
       const logEl = document.getElementById('log');
       const messageInput = document.getElementById('message');
@@ -101,5 +102,15 @@
         messageInput.value = '';
       });
     </script>
+
+    <section aria-label="setup">
+      <h2>ローカルセットアップ</h2>
+      <ol>
+        <li><code>npm install</code></li>
+        <li><code>npm run all</code> でHubサーバーとデモページを同時起動（もしくは <code>npm run start</code> と <code>npm run demo</code> を別ターミナルで）</li>
+        <li>または <code>npx github:cat2151/cross-origin-hub</code> だけで一括起動できます</li>
+        <li>ブラウザで <code>http://localhost:3000</code> と <code>http://localhost:4000</code> を開き、メッセージが相互に届くことを確認</li>
+      </ol>
+    </section>
   </body>
 </html>
