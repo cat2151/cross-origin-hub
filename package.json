@@ -19,7 +19,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "cross-origin-hub": "./scripts/run-all.mjs"
+    "cross-origin-hub": "./scripts/run-all.mjs",
+    "cross-origin-hub-hub": "./scripts/run-hub-only.mjs"
   },
   "bugs": {
     "url": "https://github.com/cat2151/cross-origin-hub/issues"

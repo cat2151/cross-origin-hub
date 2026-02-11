@@ -527,6 +527,7 @@ npm run demo     # 左右のデモページをローカルで起動する場合�
 
 GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（`npm run start`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。`npm run demo` や `npx github:cat2151/cross-origin-hub` でローカルのLeft/Rightを立ち上げる必要はありません。
 ブラウザで2つのデモページを開き、どちらかでメッセージを送信すると、もう一方にも表示されればPhase 0の要件を満たしています。
+Hubだけをワンショットで起動したい場合は `npx cross-origin-hub-hub` を利用してください（GitHub PagesのLeft/Rightと組み合わせる想定です）。
 
 ### Phase 1: セキュリティ実装（2週間）
 

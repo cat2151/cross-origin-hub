@@ -16,6 +16,8 @@ Run `npm run start` and `npm run demo` in separate terminals so both stay runnin
 npm run all       # start hub + both demo servers
 # or one-shot without cloning
 npx github:cat2151/cross-origin-hub
+# hub only (use with GitHub Pages-hosted left/right)
+npx cross-origin-hub-hub
 ```
 
 Open both demo pages in the browser and send messages; they should appear on the opposite page via the hub.  
