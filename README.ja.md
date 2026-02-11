@@ -113,7 +113,7 @@ Cross-Origin Hubは、異なるドメインで開発された独立したWebア�
 │                         │                              │
 │              ┌──────────▼──────────┐                   │
 │              │   Native Hub App    │                   │
-│              │  (localhost:8787)   │                   │
+│              │  (127.0.0.1:8787)   │                   │
 │              │                     │                   │
 │              │  ┌───────────────┐  │                   │
 │              │  │ CORS Policy   │  │                   │
@@ -299,7 +299,7 @@ console.log('Allowed origins:', allowedOrigins);
 ```javascript
 class CrossOriginHub {
   constructor(options = {}) {
-    this.serverUrl = options.serverUrl || 'ws://localhost:8787';
+    this.serverUrl = options.serverUrl || 'ws://127.0.0.1:8787';
     this.autoReconnect = options.autoReconnect !== false;
     this.reconnectInterval = options.reconnectInterval || 3000;
     
@@ -518,7 +518,7 @@ interface HubMessage {
 
 ```bash
 npm install
-npm run start    # Hubサーバー (ws://localhost:8787)
+npm run start    # Hubサーバー (ws://127.0.0.1:8787)
 npm run demo     # 左右のデモページ (http://localhost:3000 と http://localhost:4000)
 ```
 

@@ -6,7 +6,7 @@ Phase 0 proof-of-concept for Cross-Origin Hub.
 
 ```bash
 npm install
-npm run start    # WebSocket hub on ws://localhost:8787
+npm run start    # WebSocket hub on ws://127.0.0.1:8787
 npm run demo     # Demo pages on http://localhost:3000 and http://localhost:4000
 ```
 

@@ -2,8 +2,15 @@ import express from 'express';
 import http from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
 
-const PORT = process.env.HUB_PORT ? Number(process.env.HUB_PORT) : 8787;
+const DEFAULT_PORT = 8787;
+const envPort = process.env.HUB_PORT;
+const parsedPort = envPort ? Number(envPort) : DEFAULT_PORT;
+const PORT = Number.isInteger(parsedPort) && parsedPort > 0 ? parsedPort : DEFAULT_PORT;
 const HOST = process.env.HUB_HOST || '127.0.0.1';
+
+if (envPort && PORT === DEFAULT_PORT) {
+  console.warn(`Invalid HUB_PORT "${envPort}", falling back to ${DEFAULT_PORT}`);
+}
 
 const app = express();
 app.get('/health', (_req, res) => {
