@@ -3,6 +3,7 @@ const express = require('express');
 
 const LEFT_PORT = 3000;
 const RIGHT_PORT = 4000;
+const HOST = '127.0.0.1';
 const clientLibPath = path.join(__dirname, '..', 'src', 'cross-origin-hub.js');
 
 function createApp(staticPath) {
@@ -17,10 +18,10 @@ function createApp(staticPath) {
 const leftApp = createApp(path.join(__dirname, '..', 'demo', 'left'));
 const rightApp = createApp(path.join(__dirname, '..', 'demo', 'right'));
 
-leftApp.listen(LEFT_PORT, () => {
-  console.log(`Left demo running at http://localhost:${LEFT_PORT}`);
+leftApp.listen(LEFT_PORT, HOST, () => {
+  console.log(`Left demo running at http://${HOST}:${LEFT_PORT}`);
 });
 
-rightApp.listen(RIGHT_PORT, () => {
-  console.log(`Right demo running at http://localhost:${RIGHT_PORT}`);
+rightApp.listen(RIGHT_PORT, HOST, () => {
+  console.log(`Right demo running at http://${HOST}:${RIGHT_PORT}`);
 });

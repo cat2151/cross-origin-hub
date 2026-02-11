@@ -12,12 +12,34 @@
       this.reconnectInterval = options.reconnectInterval || 3000;
       this.eventHandlers = new Map();
       this.connectionState = 'disconnected';
+      this.WebSocketCtor =
+        options.WebSocket ||
+        (typeof WebSocket !== 'undefined' ? WebSocket : this._getNodeWebSocket());
       this.ws = null;
       this.connect();
     }
 
+    _getNodeWebSocket() {
+      try {
+        if (typeof require === 'function') {
+          // eslint-disable-next-line global-require, import/no-dynamic-require
+          const ws = require('ws');
+          return ws;
+        }
+      } catch (_error) {
+        return null;
+      }
+      return null;
+    }
+
     connect() {
-      this.ws = new WebSocket(this.serverUrl);
+      if (!this.WebSocketCtor) {
+        throw new Error(
+          'WebSocket constructor is not available. Provide one via options.WebSocket or install the "ws" package in Node environments.'
+        );
+      }
+
+      this.ws = new this.WebSocketCtor(this.serverUrl);
       this.ws.onopen = () => {
         this.connectionState = 'connected';
         this.emit('_connected');
