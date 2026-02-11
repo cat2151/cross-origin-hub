@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cross-Origin Hub Demo - Left</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 24px;
+        background: #f7f7fb;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      #status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: #fff3cd;
+        color: #8a6d3b;
+        border: 1px solid #ffeeba;
+      }
+      form {
+        margin: 16px 0;
+      }
+      input[type="text"] {
+        width: 320px;
+        padding: 8px;
+        margin-right: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 14px;
+        border: none;
+        background: #4f46e5;
+        color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #log {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 12px;
+        min-height: 160px;
+      }
+      .entry {
+        margin: 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Left Demo (localhost:3000)</h1>
+    <div id="status">接続中...</div>
+
+    <form id="message-form">
+      <label for="message">メッセージを送信:</label><br />
+      <input id="message" type="text" placeholder="Hello from left" required />
+      <button type="submit">Send</button>
+    </form>
+
+    <div id="log" aria-live="polite"></div>
+
+    <script type="module">
+      import CrossOriginHub from '../cross-origin-hub.js';
+
+      const statusEl = document.getElementById('status');
+      const logEl = document.getElementById('log');
+      const messageInput = document.getElementById('message');
+      const form = document.getElementById('message-form');
+
+      const hub = new CrossOriginHub();
+
+      function setStatus(text, color) {
+        statusEl.textContent = text;
+        if (color) statusEl.style.background = color;
+      }
+
+      function addLog(text) {
+        const entry = document.createElement('div');
+        entry.className = 'entry';
+        entry.textContent = text;
+        logEl.appendChild(entry);
+      }
+
+      hub.on('_connected', () => setStatus('接続済み'));
+      hub.on('_disconnected', () => setStatus('切断されました', '#ffeaea'));
+      hub.on('_error', () => setStatus('エラー', '#ffeaea'));
+
+      hub.on('demo-message', (data, meta) => {
+        addLog(`[${meta.from}] ${data.text}`);
+      });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const text = messageInput.value.trim();
+        if (!text) return;
+        hub.send('demo-message', { text, sender: 'left' });
+        addLog(`[me] ${text}`);
+        messageInput.value = '';
+      });
+    </script>
+
+    <section aria-label="setup">
+      <h2>ローカルセットアップ</h2>
+      <ol>
+        <li><code>npm install</code></li>
+        <li><code>npm run all</code> でHubサーバーとデモページを同時起動（もしくは <code>npm run start</code> と <code>npm run demo</code> を別ターミナルで）</li>
+        <li>または <code>npx github:cat2151/cross-origin-hub</code> だけで一括起動できます</li>
+        <li>ブラウザで <code>http://localhost:3000</code> と <code>http://localhost:4000</code> を開き、メッセージが相互に届くことを確認</li>
+      </ol>
+    </section>
+  </body>
+</html>
