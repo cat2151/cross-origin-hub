@@ -113,7 +113,7 @@ Cross-Origin Hubは、異なるドメインで開発された独立したWebア�
 │                         │                              │
 │              ┌──────────▼──────────┐                   │
 │              │   Native Hub App    │                   │
-│              │  (localhost:8080)   │                   │
+│              │  (127.0.0.1:8787)   │                   │
 │              │                     │                   │
 │              │  ┌───────────────┐  │                   │
 │              │  │ CORS Policy   │  │                   │
@@ -201,7 +201,7 @@ VOICEVOX Engineの実装に倣い、明示的なホワイトリスト方式を�
     "https://notes.com",
     "https://video.com"
   ],
-  "port": 8080,
+  "port": 8787,
   "enableLogging": true
 }
 ```
@@ -238,7 +238,7 @@ app.use(cors(corsOptions));
 
 // WebSocketサーバー
 const wss = new WebSocket.Server({ 
-  port: config.port || 8080,
+  port: config.port || 8787,
   verifyClient: (info) => {
     const origin = info.origin;
     return allowedOrigins.includes(origin);
@@ -288,7 +288,7 @@ function broadcastMessage(message, sender, senderOrigin) {
   });
 }
 
-console.log(`Bridge server running on port ${config.port || 8080}`);
+console.log(`Bridge server running on port ${config.port || 8787}`);
 console.log('Allowed origins:', allowedOrigins);
 ```
 
@@ -299,7 +299,7 @@ console.log('Allowed origins:', allowedOrigins);
 ```javascript
 class CrossOriginHub {
   constructor(options = {}) {
-    this.serverUrl = options.serverUrl || 'ws://localhost:8080';
+    this.serverUrl = options.serverUrl || 'ws://127.0.0.1:8787';
     this.autoReconnect = options.autoReconnect !== false;
     this.reconnectInterval = options.reconnectInterval || 3000;
     
@@ -518,7 +518,7 @@ interface HubMessage {
 
 ```bash
 npm install
-npm run start    # Hubサーバー (ws://localhost:8080)
+npm run start    # Hubサーバー (ws://127.0.0.1:8787)
 npm run demo     # 左右のデモページ (http://localhost:3000 と http://localhost:4000)
 ```
 
@@ -618,7 +618,7 @@ GitHub Pages にデプロイされた場合は、`/left/` と `/right/` をブ�
 **Native Hub App:**
 - Node.js 18.x以上
 - または、Electron/Tauriでパッケージング済みバイナリ
-- ポート8080を使用（設定可能）
+- ポート8787を使用（設定可能）
 
 **Hub Library:**
 - モダンブラウザ（WebSocket対応）
