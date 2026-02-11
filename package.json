@@ -1,0 +1,27 @@
+{
+  "name": "cross-origin-hub",
+  "version": "1.0.0",
+  "description": "Phase 0 prototype for Cross-Origin Hub",
+  "main": "src/cross-origin-hub.js",
+  "scripts": {
+    "start": "node src/hub-server.js",
+    "demo": "node scripts/demo-servers.js",
+    "test": "echo \"No automated tests defined\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cat2151/cross-origin-hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cat2151/cross-origin-hub/issues"
+  },
+  "homepage": "https://github.com/cat2151/cross-origin-hub#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
+  }
+}

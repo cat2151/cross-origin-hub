@@ -514,6 +514,16 @@ interface HubMessage {
 - WebSocketの接続が安定するか
 - パフォーマンスに問題がないか
 
+### Phase 0 の動かし方
+
+```bash
+npm install
+npm run start    # Hubサーバー (ws://localhost:8080)
+npm run demo     # 左右のデモページ (http://localhost:3000 と http://localhost:4000)
+```
+
+ブラウザで2つのデモページを開き、どちらかでメッセージを送信すると、もう一方にも表示されればPhase 0の要件を満たしています。
+
 ### Phase 1: セキュリティ実装（2週間）
 
 **目標:** VOICEVOX Engine方式のセキュリティモデルを実装
