@@ -522,10 +522,10 @@ npm run start    # Hubサーバー (ws://127.0.0.1:8787)
 npm run demo     # 左右のデモページをローカルで起動する場合だけ
 ```
 
-Hubサーバーとデモサーバーは、それぞれ別ターミナルで同時に起動してください。
+ローカルでLeft/Rightも動かす場合は、Hubサーバーとデモサーバーを別ターミナルで同時に起動してください。
 一括で起動する場合は `npm run all` を利用できます。ローカルへ clone せず試す場合は `npx github:cat2151/cross-origin-hub` だけでHubとデモを同時起動できます。
 
-GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（`npm run start`）、ブラウザでは `https://{your-repo}.github.io/.../left/` と `/right/` を開いてください。`npm run demo` や `npx github:cat2151/cross-origin-hub` でローカルのLeft/Rightを立ち上げる必要はありません。
+GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（`npm run start`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。`npm run demo` や `npx github:cat2151/cross-origin-hub` でローカルのLeft/Rightを立ち上げる必要はありません。
 ブラウザで2つのデモページを開き、どちらかでメッセージを送信すると、もう一方にも表示されればPhase 0の要件を満たしています。
 
 ### Phase 1: セキュリティ実装（2週間）
