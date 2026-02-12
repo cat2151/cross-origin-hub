@@ -6,19 +6,8 @@ Phase 0 proof-of-concept for Cross-Origin Hub.
 
 ```bash
 npm install
-npm run start    # WebSocket hub on ws://127.0.0.1:8787
-npm run demo     # Demo pages on http://localhost:3000 and http://localhost:4000
+npx cross-origin-hub   # WebSocket hub on ws://127.0.0.1:8787
 ```
 
-Run `npm run start` and `npm run demo` in separate terminals so both stay running, or simply run:
-
-```bash
-npm run all       # start hub + both demo servers
-# or one-shot without cloning
-npx github:cat2151/cross-origin-hub
-# hub only (use with GitHub Pages-hosted left/right)
-npx cross-origin-hub-hub
-```
-
-Open both demo pages in the browser and send messages; they should appear on the opposite page via the hub.  
-When GitHub Pages is deployed (via the included workflow), you can also open the hosted `/left/` and `/right/` pages while running the local hub to validate cross-origin messaging from GitHub Pages to your localhost hub.
+Keep the hub running locally, then open the GitHub Pages-hosted `/left/` and `/right/` pages; messages should appear on the opposite page via the hub.  
+For local development of the demo servers, you can still use `npm run start` and `npm run demo` (or `npm run all`) in separate terminals.
