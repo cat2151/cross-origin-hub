@@ -2,35 +2,36 @@ use std::{
     collections::HashMap,
     env,
     sync::{
-        Arc,
         atomic::{AtomicUsize, Ordering},
+        Arc,
     },
     time::{SystemTime, UNIX_EPOCH},
 };
 
 use axum::{
-    Json, Router,
     extract::{
-        State, WebSocketUpgrade,
         ws::{Message, WebSocket},
+        State, WebSocketUpgrade,
     },
     http::HeaderMap,
     response::{IntoResponse, Response},
     routing::get,
+    Json, Router,
 };
 use futures_util::{sink::SinkExt, stream::StreamExt};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use tokio::{
     net::TcpListener,
     sync::{
+        mpsc::{channel, error::TrySendError, Sender},
         RwLock,
-        mpsc::{UnboundedSender, unbounded_channel},
     },
 };
 
 type SharedState = Arc<AppState>;
 
 const DEFAULT_PORT: u16 = 8787;
+const CHANNEL_CAPACITY: usize = 256;
 
 struct AppState {
     clients: RwLock<HashMap<usize, ClientHandle>>,
@@ -38,7 +39,7 @@ struct AppState {
 }
 
 struct ClientHandle {
-    sender: UnboundedSender<Message>,
+    sender: Sender<Message>,
 }
 
 #[tokio::main]
@@ -91,7 +92,7 @@ async fn ws_handler(
 
 async fn handle_socket(state: SharedState, socket: WebSocket, origin: String) {
     let (mut ws_sender, mut ws_receiver) = socket.split();
-    let (tx, mut rx) = unbounded_channel::<Message>();
+    let (tx, mut rx) = channel::<Message>(CHANNEL_CAPACITY);
 
     let client_id = state.next_id.fetch_add(1, Ordering::Relaxed);
 
@@ -138,31 +139,36 @@ fn build_broadcast_payload(raw: &str, origin: &str) -> Result<String, String> {
     let payload: Value =
         serde_json::from_str(raw).map_err(|_| "Invalid JSON message".to_string())?;
 
-    let Some(event_type) = payload
-        .get("eventType")
-        .and_then(|value| value.as_str())
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-    else {
+    let Some(obj) = payload.as_object() else {
         return Err("Invalid message shape".to_string());
     };
 
-    let Some(data) = payload.get("data").and_then(|value| value.as_object()) else {
+    let Some(event_type_raw) = obj.get("eventType").and_then(|value| value.as_str()) else {
         return Err("Invalid message shape".to_string());
     };
 
-    let response = json!({
-        "eventType": event_type,
-        "data": Value::Object(data.clone()),
-        "from": origin,
-        "timestamp": current_timestamp(),
-    });
+    if event_type_raw.trim().is_empty() {
+        return Err("Invalid message shape".to_string());
+    }
 
-    Ok(response.to_string())
+    let Some(data) = obj.get("data").and_then(|value| value.as_object()) else {
+        return Err("Invalid message shape".to_string());
+    };
+
+    let mut merged = obj.clone();
+    merged.insert(
+        "eventType".to_string(),
+        Value::String(event_type_raw.to_string()),
+    );
+    merged.insert("data".to_string(), Value::Object(data.clone()));
+    merged.insert("from".to_string(), Value::String(origin.to_string()));
+    merged.insert("timestamp".to_string(), json!(current_timestamp()));
+
+    Ok(Value::Object(merged).to_string())
 }
 
 async fn broadcast(state: &SharedState, sender_id: usize, message: &str) {
-    let recipients: Vec<UnboundedSender<Message>> = state
+    let recipients: Vec<Sender<Message>> = state
         .clients
         .read()
         .await
@@ -173,7 +179,11 @@ async fn broadcast(state: &SharedState, sender_id: usize, message: &str) {
 
     let payload = Message::Text(message.to_string());
     for recipient in recipients {
-        let _ = recipient.send(payload.clone());
+        match recipient.try_send(payload.clone()) {
+            Ok(_) => {}
+            Err(TrySendError::Full(_)) => {}
+            Err(TrySendError::Closed(_)) => {}
+        }
     }
 }
 
@@ -181,7 +191,7 @@ async fn send_error(state: &SharedState, client_id: usize, message: &str) {
     let error_payload = Message::Text(error_message(message));
 
     if let Some(sender) = state.clients.read().await.get(&client_id) {
-        let _ = sender.sender.send(error_payload);
+        let _ = sender.sender.try_send(error_payload);
     }
 }
 
