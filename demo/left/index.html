@@ -59,7 +59,6 @@
     <form id="message-form">
       <label for="message">メッセージを送信:</label><br />
       <input id="message" type="text" placeholder="Hello from left" required />
-      <button type="submit">Send</button>
     </form>
 
     <div id="log" aria-live="polite"></div>
@@ -94,13 +93,13 @@
         addLog(`[${meta.from}] ${data.text}`);
       });
 
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
+      form.addEventListener('submit', (event) => event.preventDefault());
+
+      messageInput.addEventListener('input', () => {
         const text = messageInput.value.trim();
         if (!text) return;
         hub.send('demo-message', { text, sender: 'left' });
         addLog(`[me] ${text}`);
-        messageInput.value = '';
       });
     </script>
 
