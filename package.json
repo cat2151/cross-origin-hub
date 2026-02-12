@@ -19,7 +19,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "cross-origin-hub": "./scripts/run-all.mjs",
+    "cross-origin-hub": "./scripts/run-hub-only.mjs",
     "cross-origin-hub-hub": "./scripts/run-hub-only.mjs"
   },
   "bugs": {

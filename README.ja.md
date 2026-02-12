@@ -516,18 +516,23 @@ interface HubMessage {
 
 ### Phase 0 の動かし方
 
+ワンショット（clone不要）:
+
 ```bash
-npm install
-npm run start    # Hubサーバー (ws://127.0.0.1:8787)
-npm run demo     # 左右のデモページをローカルで起動する場合だけ
+npx cross-origin-hub   # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
 ```
 
-ローカルでLeft/Rightも動かす場合は、Hubサーバーとデモサーバーを別ターミナルで同時に起動してください。
-一括で起動する場合は `npm run all` を利用できます。ローカルへ clone せず試す場合は `npx github:cat2151/cross-origin-hub` だけでHubとデモを同時起動できます。
+リポジトリをcloneして使う場合:
 
-GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（`npm run start`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。`npm run demo` や `npx github:cat2151/cross-origin-hub` でローカルのLeft/Rightを立ち上げる必要はありません。
+```bash
+npm install
+npm run start          # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
+```
+
+GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（例: `npx cross-origin-hub`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。ローカルのLeft/Rightを立ち上げる必要はありません。
+開発者がローカルのデモサーバーも動かしたい場合は `npm run start` と `npm run demo` を別ターミナルで実行するか、`npm run all` で両方を1プロセスで起動できます。
 ブラウザで2つのデモページを開き、どちらかでメッセージを送信すると、もう一方にも表示されればPhase 0の要件を満たしています。
-Hubだけをワンショットで起動したい場合は `npx cross-origin-hub-hub` を利用してください（GitHub PagesのLeft/Rightと組み合わせる想定です）。
+Hubだけをワンショットで起動したい場合は `npx cross-origin-hub` を利用してください（GitHub PagesのLeft/Rightと組み合わせる想定です）。
 
 ### Phase 1: セキュリティ実装（2週間）
 
