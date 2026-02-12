@@ -7,7 +7,7 @@ Phase 0 proof-of-concept for Cross-Origin Hub.
 One-shot (no clone):
 
 ```bash
-npx cross-origin-hub   # WebSocket hub on ws://127.0.0.1:8787
+npx github:cat2151/cross-origin-hub   # WebSocket hub on ws://127.0.0.1:8787
 ```
 
 From a clone:
