@@ -529,6 +529,12 @@ npm install
 npm run start          # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
 ```
 
+Rust CLI版（cloneして使う場合）:
+
+```bash
+cargo run --release --manifest-path cross-origin-hub-rs/Cargo.toml
+```
+
 GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（例: `npx github:cat2151/cross-origin-hub`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。ローカルのLeft/Rightを立ち上げる必要はありません。
 開発者がローカルのデモサーバーも動かしたい場合は `npm run start` と `npm run demo` を別ターミナルで実行するか、`npm run all` で両方を1プロセスで起動できます。
 ブラウザで2つのデモページを開き、どちらかでメッセージを送信すると、もう一方にも表示されればPhase 0の要件を満たしています。
