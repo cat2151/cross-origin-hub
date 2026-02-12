@@ -520,6 +520,9 @@ interface HubMessage {
 
 ```bash
 npx github:cat2151/cross-origin-hub   # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
+# Rust（cargo runに --git は無いので install 経由）:
+cargo install --git https://github.com/cat2151/cross-origin-hub --locked cross-origin-hub-rs
+cross-origin-hub-rs                  # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
 ```
 
 リポジトリをcloneして使う場合:

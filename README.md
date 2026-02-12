@@ -8,6 +8,9 @@ One-shot (no clone):
 
 ```bash
 npx github:cat2151/cross-origin-hub   # WebSocket hub on ws://127.0.0.1:8787
+# Rust (install from git, since cargo run does not support --git):
+cargo install --git https://github.com/cat2151/cross-origin-hub --locked cross-origin-hub-rs
+cross-origin-hub-rs                  # WebSocket hub on ws://127.0.0.1:8787
 ```
 
 From a clone:
