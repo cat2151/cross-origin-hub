@@ -520,6 +520,9 @@ interface HubMessage {
 
 ```bash
 npx github:cat2151/cross-origin-hub   # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
+# Rust（cargo runに --git は無いので install 経由）:
+cargo install --git https://github.com/cat2151/cross-origin-hub --locked cross-origin-hub-rs
+cross-origin-hub-rs                  # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
 ```
 
 リポジトリをcloneして使う場合:
@@ -527,6 +530,12 @@ npx github:cat2151/cross-origin-hub   # Hubサーバーのみ起動 (ws://127.0.
 ```bash
 npm install
 npm run start          # Hubサーバーのみ起動 (ws://127.0.0.1:8787)
+```
+
+Rust CLI版（cloneして使う場合）:
+
+```bash
+cargo run --release --manifest-path cross-origin-hub-rs/Cargo.toml
 ```
 
 GitHub Pages 版で動作確認するときは、ローカルでは Hub だけを起動し（例: `npx github:cat2151/cross-origin-hub`）、ブラウザでは `https://{your-user-or-org}.github.io/{your-repo}/left/` と `https://{your-user-or-org}.github.io/{your-repo}/right/` を開いてください。ローカルのLeft/Rightを立ち上げる必要はありません。

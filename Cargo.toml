@@ -1,0 +1,3 @@
+[workspace]
+members = ["cross-origin-hub-rs"]
+resolver = "2"
