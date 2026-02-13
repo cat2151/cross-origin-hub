@@ -27,7 +27,7 @@
   - `mime`: `audio/wav`
   - `bytes`: base64文字列
   - `durationMs`, `sampleRate`, `channels`: 任意メタ
-- 往復を行う場合の要求側イベント例: `eventType= vst:render-request`, `data`に`id/prompt/preset/scriptPath`などを入れてローカルブリッジが受け取る。
+- 往復を行う場合の要求側イベント例: `eventType = vst:render-request`, `data`に`id/prompt/preset/scriptPath`などを入れてローカルブリッジが受け取る。
 
 ## ブラウザ側の最小ページ
 - トグル「vst wav from hub」ONでHub接続し、`vst:wav-rendered`を購読して受信次第再生＆ダウンロードリンクを提示。
