@@ -1,4 +1,5 @@
 const DEFAULT_SERVER_URL = 'ws://127.0.0.1:8787';
+const DEFAULT_MAX_WAV_BYTES = 5 * 1024 * 1024;
 
 export default class CrossOriginHub {
   constructor(options = {}) {
@@ -116,4 +117,100 @@ export default class CrossOriginHub {
   getConnectionState() {
     return this.connectionState;
   }
+}
+
+function normalizeArrayBuffer(view) {
+  if (view.byteLength === view.buffer.byteLength && view.byteOffset === 0) {
+    return view.buffer;
+  }
+  return view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
+}
+
+async function toArrayBuffer(input) {
+  if (input instanceof ArrayBuffer) {
+    return input;
+  }
+  if (ArrayBuffer.isView(input)) {
+    return normalizeArrayBuffer(input);
+  }
+  if (typeof Blob !== 'undefined' && input instanceof Blob) {
+    return input.arrayBuffer();
+  }
+  throw new Error('sendWav expects a Blob, ArrayBuffer, or TypedArray input');
+}
+
+function bufferToBase64(buffer) {
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(buffer).toString('base64');
+  }
+
+  if (typeof btoa === 'function') {
+    const bytes = new Uint8Array(buffer);
+    const chunkSize = 0x8000;
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    return btoa(binary);
+  }
+
+  throw new Error('No base64 encoder available in this environment.');
+}
+
+export function createWavHubSender(options = {}) {
+  const { serverUrl, WebSocket, maxBytes = DEFAULT_MAX_WAV_BYTES, defaultMime = 'audio/wav', onError } = options;
+  const hub = new CrossOriginHub({ serverUrl, WebSocket });
+  const notifyError = typeof onError === 'function' ? onError : (error) => console.warn(error);
+  let sendEnabled = false;
+
+  function toggleSend(on) {
+    sendEnabled = !!on;
+    return sendEnabled;
+  }
+
+  async function sendWav(wavInput, metadata = {}) {
+    if (!sendEnabled) {
+      return { sent: false, reason: 'send_disabled' };
+    }
+
+    if (typeof metadata !== 'object' || metadata === null || Array.isArray(metadata)) {
+      const error = new Error('metadata must be a plain object');
+      notifyError(error);
+      return { sent: false, reason: 'invalid_metadata' };
+    }
+
+    try {
+      const buffer = await toArrayBuffer(wavInput);
+      const size = buffer.byteLength;
+
+      if (maxBytes && size > maxBytes) {
+        notifyError(new Error(`WAV payload too large (${size} bytes). Max is ${maxBytes} bytes.`));
+        return { sent: false, reason: 'too_large', size, maxBytes };
+      }
+
+      const connected = typeof hub.getConnectionState === 'function'
+        ? hub.getConnectionState() === 'connected'
+        : hub.connectionState === 'connected';
+      if (!connected) {
+        const error = new Error('Cannot send WAV: hub is not connected.');
+        notifyError(error);
+        return { sent: false, reason: 'not_connected', size };
+      }
+
+      const payload = {
+        ...metadata,
+        mime: metadata.mime || defaultMime,
+      };
+
+      payload.bytes = bufferToBase64(buffer);
+
+      hub.send('wav:generated', payload);
+      return { sent: true, size };
+    } catch (error) {
+      notifyError(error);
+      return { sent: false, reason: 'error', error };
+    }
+  }
+
+  return { toggleSend, sendWav, hub };
 }
