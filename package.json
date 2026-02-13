@@ -1,12 +1,11 @@
 {
-  "name": "cross-origin-hub",
+  "name": "@cat2151/cross-origin-hub",
   "version": "1.0.0",
   "description": "Phase 0 prototype for Cross-Origin Hub",
   "main": "src/cross-origin-hub.js",
   "scripts": {
     "start": "node src/hub-server.js",
-    "demo": "node scripts/demo-servers.js",
-    "all": "node scripts/run-all.mjs",
+    "build:lib": "node scripts/build-lib.mjs",
     "build:pages": "node scripts/build-pages.mjs",
     "test": "echo \"No automated tests defined\""
   },
@@ -21,6 +20,19 @@
   "bin": {
     "cross-origin-hub": "./scripts/run-hub-only.mjs",
     "cross-origin-hub-hub": "./scripts/run-hub-only.mjs"
+  },
+  "files": [
+    "dist-lib",
+    "src",
+    "scripts/run-hub-only.mjs",
+    "scripts/build-lib.mjs",
+    "scripts/build-pages.mjs",
+    "index.html",
+    "demo01",
+    "demo02"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "bugs": {
     "url": "https://github.com/cat2151/cross-origin-hub/issues"

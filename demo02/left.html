@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WAV Sender Demo02 (Left)</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 24px;
+        background: #f6f8ff;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      .status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: #fff3cd;
+        color: #8a6d3b;
+        border: 1px solid #ffeeba;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid #d9e2ff;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        margin-top: 8px;
+      }
+      input[type="number"] {
+        width: 120px;
+        padding: 6px;
+        margin-right: 8px;
+      }
+      button {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        background: #3b82f6;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #9db8f4;
+        cursor: not-allowed;
+      }
+      #log .entry {
+        margin: 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Demo02 WAV Sender (Left)</h1>
+    <div class="panel">
+      <div class="status" id="status">接続中...</div>
+      <label>
+        <input id="send-toggle" type="checkbox" />
+        send to hub（接続済みになってからONにする）
+      </label>
+    </div>
+
+    <div class="panel">
+      <h2>サイン波を生成してHubへ送る</h2>
+      <label>
+        周波数(Hz)
+        <input id="freq" type="number" min="50" max="2000" step="10" value="440" />
+      </label>
+      <label>
+        長さ(ms)
+        <input id="duration" type="number" min="100" max="3000" step="100" value="1000" />
+      </label>
+      <label>
+        サンプルレート
+        <input id="sample-rate" type="number" min="8000" max="48000" step="1000" value="44100" />
+      </label>
+      <button id="generate-btn">サイン波を生成して送信</button>
+      <div>
+        <audio id="preview" controls></audio>
+      </div>
+      <div id="result"></div>
+    </div>
+
+    <div class="panel">
+      <h2>ログ</h2>
+      <div id="log"></div>
+    </div>
+
+    <section aria-label="setup">
+      <h2>利用手順</h2>
+      <ol>
+        <li><code>npx @cat2151/cross-origin-hub demo02</code> でローカルHubを起動（ws://127.0.0.1:8787）</li>
+        <li>GitHub Pagesの <code>/demo02/left.html</code> と <code>/demo02/right.html</code> をブラウザ2枚で開く</li>
+        <li>Hubが「接続済み」になったら send to hub をONにし、サイン波を生成</li>
+        <li>ライブラリは公開パッケージ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
+      </ol>
+      <p>使用API: <code>createWavHubSender({ serverUrl, maxBytes, defaultMime })</code> → <code>{ toggleSend(on), sendWav(wavBlob, metadata), hub }</code></p>
+    </section>
+
+    <script type="module">
+      import { createWavHubSender } from '../cross-origin-hub.js';
+
+      const statusEl = document.getElementById('status');
+      const sendToggle = document.getElementById('send-toggle');
+      const freqInput = document.getElementById('freq');
+      const durationInput = document.getElementById('duration');
+      const sampleRateInput = document.getElementById('sample-rate');
+      const generateBtn = document.getElementById('generate-btn');
+      const resultEl = document.getElementById('result');
+      const logEl = document.getElementById('log');
+      const previewEl = document.getElementById('preview');
+
+      const { toggleSend, sendWav, hub } = createWavHubSender();
+
+      function setStatus(text, color) {
+        statusEl.textContent = text;
+        if (color) {
+          statusEl.style.background = color;
+        } else {
+          statusEl.style.background = '#fff3cd';
+        }
+      }
+
+      function addLog(text) {
+        const entry = document.createElement('div');
+        entry.className = 'entry';
+        entry.textContent = text;
+        logEl.appendChild(entry);
+      }
+
+      hub.on('_connected', () => setStatus('接続済み', '#e0ffe5'));
+      hub.on('_disconnected', () => setStatus('切断されました', '#ffeaea'));
+      hub.on('_error', (err) => {
+        setStatus('エラー', '#ffeaea');
+        addLog(`error: ${err?.message || err}`);
+      });
+
+      sendToggle.addEventListener('change', () => {
+        const enabled = toggleSend(sendToggle.checked);
+        addLog(`send toggle: ${enabled ? 'ON' : 'OFF'}`);
+      });
+
+      function createSineWav({ frequency, durationMs, sampleRate }) {
+        const totalSamples = Math.floor((durationMs / 1000) * sampleRate);
+        const samples = new Float32Array(totalSamples);
+        const amplitude = 0.6;
+        for (let i = 0; i < totalSamples; i += 1) {
+          samples[i] = amplitude * Math.sin((2 * Math.PI * frequency * i) / sampleRate);
+        }
+        return encodePcm16Wav(samples, sampleRate);
+      }
+
+      function encodePcm16Wav(samples, sampleRate) {
+        const numChannels = 1;
+        const bytesPerSample = 2;
+        const blockAlign = numChannels * bytesPerSample;
+        const byteRate = sampleRate * blockAlign;
+        const dataSize = samples.length * bytesPerSample;
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+
+        const writeString = (offset, str) => {
+          for (let i = 0; i < str.length; i += 1) {
+            view.setUint8(offset + i, str.charCodeAt(i));
+          }
+        };
+
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + dataSize, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, byteRate, true);
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, bytesPerSample * 8, true);
+        writeString(36, 'data');
+        view.setUint32(40, dataSize, true);
+
+        let offset = 44;
+        for (let i = 0; i < samples.length; i += 1) {
+          const s = Math.max(-1, Math.min(1, samples[i]));
+          view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+          offset += 2;
+        }
+
+        return buffer;
+      }
+
+      function toDataUrl(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i += 1) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const base64 = btoa(binary);
+        return `data:audio/wav;base64,${base64}`;
+      }
+
+      generateBtn.addEventListener('click', async () => {
+        const frequency = Number(freqInput.value) || 440;
+        const durationMs = Number(durationInput.value) || 1000;
+        const sampleRate = Number(sampleRateInput.value) || 44100;
+
+        generateBtn.disabled = true;
+        resultEl.textContent = '生成中...';
+
+        const wavBuffer = createSineWav({ frequency, durationMs, sampleRate });
+        const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+
+        previewEl.src = toDataUrl(wavBuffer);
+
+        const id = `sine-${Date.now()}`;
+        const metadata = {
+          id,
+          name: `sine-${frequency}hz`,
+          mime: 'audio/wav',
+          sampleRate,
+          durationMs,
+          source: 'demo-sine',
+        };
+
+        const result = await sendWav(blob, metadata);
+        if (result.sent) {
+          resultEl.textContent = `送信しました (${result.size} bytes)`;
+          addLog(`sent ${metadata.name}`);
+        } else {
+          resultEl.textContent = `未送信: ${result.reason || 'unknown'}`;
+          addLog(`not sent: ${result.reason || 'unknown'}`);
+        }
+
+        generateBtn.disabled = false;
+      });
+    </script>
+  </body>
+</html>

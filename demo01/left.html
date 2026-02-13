@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cross-Origin Hub Demo - Left</title>
+    <title>Cross-Origin Hub Demo01 - Left</title>
     <style>
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -44,9 +44,12 @@
     </style>
   </head>
   <body>
-    <h1>Left Demo</h1>
+    <h1>Demo01 Left (テキスト)</h1>
     <div id="status">接続中...</div>
-    <p><a href="../right/" target="_blank" rel="noopener">Rightを別ブラウザで開く</a></p>
+    <p>
+      <a href="./right.html" target="_blank" rel="noopener">Demo01 Rightを別ブラウザで開く</a> |
+      <a href="../demo02/left.html" target="_blank" rel="noopener">Demo02 (WAV) を開く</a>
+    </p>
 
     <form id="message-form">
       <label for="message">メッセージを送信:</label><br />
@@ -80,7 +83,7 @@
         if (logEl.children.length > MAX_LOGS) logEl.removeChild(logEl.firstChild);
       }
 
-      hub.on('_connected', () => setStatus('接続済み'));
+      hub.on('_connected', () => setStatus('接続済み', '#e0ffe5'));
       hub.on('_disconnected', () => setStatus('切断されました', '#ffeaea'));
       hub.on('_error', () => setStatus('エラー', '#ffeaea'));
 
@@ -108,8 +111,9 @@
     <section aria-label="setup">
       <h2>利用手順</h2>
       <ol>
-        <li><code>npx github:cat2151/cross-origin-hub</code> でローカルのHubだけを起動してください（ws://127.0.0.1:8787）</li>
-        <li>GitHub PagesにホストされたLeftと、上のリンクから開いたRightを左右に並べてメッセージを送受信してください</li>
+        <li><code>npx @cat2151/cross-origin-hub demo01</code> でローカルHubのみを起動（ws://127.0.0.1:8787）</li>
+        <li>GitHub Pagesにホストされた <code>/demo01/left.html</code> と <code>/demo01/right.html</code> を左右ブラウザで開く</li>
+        <li>ページは公開ライブラリ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
       </ol>
     </section>
   </body>
