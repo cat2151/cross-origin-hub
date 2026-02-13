@@ -14,6 +14,8 @@ async function build() {
     cp(resolve(rootDir, 'demo', 'index.html'), resolve(distDir, 'index.html')),
     cp(resolve(rootDir, 'demo', 'left'), resolve(distDir, 'left'), { recursive: true }),
     cp(resolve(rootDir, 'demo', 'right'), resolve(distDir, 'right'), { recursive: true }),
+    cp(resolve(rootDir, 'demo', 'wav-left'), resolve(distDir, 'wav-left'), { recursive: true }),
+    cp(resolve(rootDir, 'demo', 'wav-right'), resolve(distDir, 'wav-right'), { recursive: true }),
     cp(resolve(rootDir, 'src', 'cross-origin-hub.js'), resolve(distDir, 'cross-origin-hub.js')),
   ]);
 }
