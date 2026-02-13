@@ -1,7 +1,7 @@
 # 計画: YM2151 log JSONを「send to hub」で送り、hub経由でlocal ym2151-log-play-server（インタラクティブ）を鳴らす
 
 ## ゴール
-- cat2151のym2151系Webページで生成したYM2151 log JSONを「send to hub」ボタンひとつでCross-Origin Hubへ送る（PR20の送信フローを踏襲）。
+- cat2151のym2151系Webページで生成したYM2151 log JSONを「send to hub」トグルONでCross-Origin Hubへ送る（PR20の送信フローを踏襲）。
 - Hubに接続したlocal ym2151-log-play-serverのインタラクティブモードが、届いたlogを即座に再生できるようにする。ネイティブRust再生で音色編集などのUXを改善する。
 
 ## 想定アーキテクチャ（ハブ経由一方向）
@@ -17,7 +17,7 @@
   - `source`: 発生元Webページ（例: `web-ym2151`, `ym2151-js`）
   - `version`: log JSONのスキーマ/アプリ版
   - `log`: YM2151 log JSON本体（既存フォーマットをそのまま保持）
-  - `playHints`: 任意メタ（BPM、chip clock、loop位置など）  
+  - `playHints`: 任意メタ（BPM、chip clock、loop位置など。欠落時は受信側で`{}`想定）  
 - Hubが`from`と`timestamp`を付与して他クライアントへ中継。現状はJSONテキストのみ想定（バイナリフレーム未対応のPR20方針を継続）。
 - サイズ上限: 大きなlogは警告しスキップ（MVPでは数百KB程度を目安）。
 
@@ -25,18 +25,18 @@
 - CrossOriginHubを生成し接続状態を再利用。`_connected`/`_disconnected`/`_error`で小さなインジケーターを表示。
 - 「send to hub」トグルがONの間、最新生成log JSONを`eventType=ym2151:log-generated`で送信。トグル状態はページ内で保持（必要なら後でlocalStorage）。
 - 送信前に`log`がオブジェクトであること、`id`/`name`が空でないことを軽く検証し、失敗時はUIに通知。
-- PR20と同様にフォーム送信抑止・自動再接続・簡易エラートーストを用意。送信中はボタン連打を防ぐ。
+- PR20と同様にフォーム送信抑止・自動再接続・簡易エラートーストを用意。送信中の二重送信防止（デバウンス）を行う。
 
 ## local ym2151-log-play-server側タスク（ハブ購読→インタラクティブ反映）
 - Hub購読用の小さなクライアント（Node/Rustどちらでも可）を起動時に組み込む:
   - Hubへ接続し`ym2151:log-generated`を購読。
-  - `data.log`が存在しオブジェクトであることを検証し、`id`/`name`/`source`/`playHints`をログ出力。
+  - `data.log`が存在しオブジェクトであることを検証し、`id`/`name`/`source`をログ出力（`playHints`はあれば参照）。
   - インタラクティブモードへの受け渡し: 既存の再生API/STDIN/HTTPエンドポイントにlog JSONを流し込む（1リクエスト1 log）。応答成功でACKを表示。
   - 同じ`id`が来たら差し替え扱いにしてキャッシュ更新。
 - エラー時はHubへ`ym2151:log-error`を返すか、サーバー側でstderrに警告を残すだけでも可。
 
 ## 確認フロー（MVP）
-1. Hub起動: `npx cross-origin-hub-hub`（またはRust版 `cargo run --release --manifest-path cross-origin-hub-rs/Cargo.toml`）。  
+1. Hub起動: `npx github:cat2151/cross-origin-hub`（またはRust版 `cargo run --release --manifest-path cross-origin-hub-rs/Cargo.toml`）。  
 2. ym2151-log-play-serverをインタラクティブモードで起動し、Hub購読クライアントを同時に有効化。  
 3. Webページを開き、「send to hub」をON→YM2151 log JSONを生成→送信。  
 4. ローカル再生が開始され、`id/name/source`などがログで確認できれば成功。  
