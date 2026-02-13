@@ -3,6 +3,11 @@ import { spawn } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+if (process.env.ALLOW_LOCAL_DEMO !== '1') {
+  console.error('[cross-origin-hub] run-all is disabled because local demo serving is not allowed. Use GitHub Pages demos.');
+  process.exit(1);
+}
+
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const children = [];
 

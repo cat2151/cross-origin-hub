@@ -2,5 +2,6 @@ node_modules
 npm-debug.log*
 .DS_Store
 dist
+dist-lib
 target
 cross-origin-hub-rs/target

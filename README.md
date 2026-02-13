@@ -7,7 +7,8 @@ Phase 0 proof-of-concept for Cross-Origin Hub.
 One-shot (no clone):
 
 ```bash
-npx github:cat2151/cross-origin-hub   # WebSocket hub on ws://127.0.0.1:8787
+npx @cat2151/cross-origin-hub demo01   # Hub only on ws://127.0.0.1:8787 (demo01 profile)
+npx @cat2151/cross-origin-hub demo02   # Hub only on ws://127.0.0.1:8787 (demo02 profile)
 # Rust (install from git, since cargo run does not support --git):
 cargo install --git https://github.com/cat2151/cross-origin-hub --locked cross-origin-hub-rs
 cross-origin-hub-rs                  # WebSocket hub on ws://127.0.0.1:8787
@@ -18,6 +19,7 @@ From a clone:
 ```bash
 npm install
 npm run start          # WebSocket hub on ws://127.0.0.1:8787
+# or bin: npx @cat2151/cross-origin-hub demo01|demo02
 ```
 
 Rust CLI alternative (from a clone):
@@ -26,13 +28,13 @@ Rust CLI alternative (from a clone):
 cargo run --release --manifest-path cross-origin-hub-rs/Cargo.toml
 ```
 
-Keep the hub running locally, then open the GitHub Pages-hosted `/left/` and `/right/` pages; messages should appear on the opposite page via the hub.  
-For local development of the demo servers, run `npm run start` and `npm run demo` in separate terminals, or use `npm run all` to start both in a single process.
+Keep the hub running locally, then open the GitHub Pages-hosted demo pages; no local demo server is required or supported.
 
 ## Install as a library
 
 ```
-npm install github:cat2151/cross-origin-hub
+npm install @cat2151/cross-origin-hub --registry https://npm.pkg.github.com
+# requires a GITHUB_TOKEN with read:packages
 ```
 
 APIs:
@@ -44,7 +46,7 @@ APIs:
 `createWavHubSender` wraps `CrossOriginHub` to publish `wav:generated` payloads expected in `wav-hub-plan.md`. It converts a Blob/ArrayBuffer WAV into base64, adds `mime` (default `audio/wav`), and enforces a simple size cap before sending.
 
 ```js
-import CrossOriginHub, { createWavHubSender } from 'cross-origin-hub';
+import CrossOriginHub, { createWavHubSender } from '@cat2151/cross-origin-hub';
 
 const { toggleSend, sendWav, hub } = createWavHubSender({ serverUrl: 'ws://127.0.0.1:8787', maxBytes: 5 * 1024 * 1024 });
 
@@ -57,9 +59,9 @@ await sendWav(wavBlob, { id: 'take-1', name: 'Kick', sampleRate: 44100, source: 
 
 ## Demos
 
-- Text echo: `npm run start` (hub) + `npm run demo`, then open `http://127.0.0.1:3000` (Left) and `http://127.0.0.1:4000` (Right).
-- WAV send/receive: same commands, then open `http://127.0.0.1:3100` (WAV Left) and `http://127.0.0.1:4100` (WAV Right). Left toggles `send to hub` and generates a sine-wave WAV; Right receives `wav:generated` and plays it.
+- Demo01 (text echo): run `npx @cat2151/cross-origin-hub demo01`, then open GitHub Pages `https://cat2151.github.io/cross-origin-hub/demo01/left.html` and `.../right.html` in separate windows.
+- Demo02 (WAV send/receive): run `npx @cat2151/cross-origin-hub demo02`, then open `https://cat2151.github.io/cross-origin-hub/demo02/left.html` and `.../right.html`. Left toggles `send to hub` and generates a sine-wave WAV; Right receives `wav:generated` and plays it.
 
 ### Workflow tip (demo vs library)
 
-When updating the library and demos together, commit/release the library first. Then point demos to the published commit (e.g. `npm install github:cat2151/cross-origin-hub#<commit>`) to avoid circular git references. The bundled demos here load `cross-origin-hub.js` directly from the repo during local dev/Pages builds.
+Two GitHub Actions are split to avoid circular refs: `publish-package` builds/publishes the library, and `deploy-pages` builds demo01/demo02 to GitHub Pages using the built library artifact. Demos consume the published package—do not rely on locally served demo assets.

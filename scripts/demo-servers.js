@@ -2,6 +2,11 @@ import express from 'express';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+if (process.env.ALLOW_LOCAL_DEMO !== '1') {
+  console.error('[cross-origin-hub] Local demo servers are disabled. Use GitHub Pages demos instead.');
+  process.exit(1);
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const LEFT_PORT = 3000;
@@ -20,10 +25,10 @@ function createApp(staticPath) {
   return app;
 }
 
-const leftApp = createApp(join(__dirname, '..', 'demo', 'left'));
-const rightApp = createApp(join(__dirname, '..', 'demo', 'right'));
-const wavLeftApp = createApp(join(__dirname, '..', 'demo', 'wav-left'));
-const wavRightApp = createApp(join(__dirname, '..', 'demo', 'wav-right'));
+const leftApp = createApp(join(__dirname, '..', 'demo01'));
+const rightApp = createApp(join(__dirname, '..', 'demo01'));
+const wavLeftApp = createApp(join(__dirname, '..', 'demo02'));
+const wavRightApp = createApp(join(__dirname, '..', 'demo02'));
 
 leftApp.listen(LEFT_PORT, HOST, () => {
   console.log(`Left demo running at http://${HOST}:${LEFT_PORT}`);

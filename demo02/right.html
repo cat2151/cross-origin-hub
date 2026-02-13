@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WAV Receiver Demo (Right)</title>
+    <title>WAV Receiver Demo02 (Right)</title>
     <style>
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -42,7 +42,7 @@
     </style>
   </head>
   <body>
-    <h1>WAV Receiver Demo (Right)</h1>
+    <h1>Demo02 WAV Receiver (Right)</h1>
     <div class="panel">
       <div class="status" id="status">接続中...</div>
       <div id="last-received"></div>
@@ -61,9 +61,9 @@
     <section aria-label="setup">
       <h2>利用手順</h2>
       <ol>
-        <li><code>npm run start</code> でローカルHubを起動</li>
-        <li><code>npm run demo</code> でデモ用サーバーを起動（このページは <code>http://127.0.0.1:4100</code>）</li>
-        <li>別ブラウザで <code>http://127.0.0.1:3100</code> のWAV Leftデモを開き、send to hub をONにして生成</li>
+        <li><code>npx @cat2151/cross-origin-hub demo02</code> でローカルHubを起動</li>
+        <li>GitHub Pagesの <code>/demo02/left.html</code> と <code>/demo02/right.html</code> をブラウザ2枚で開く</li>
+        <li>ページは公開ライブラリ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
       </ol>
     </section>
 

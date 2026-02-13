@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WAV Sender Demo (Left)</title>
+    <title>WAV Sender Demo02 (Left)</title>
     <style>
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -56,7 +56,7 @@
     </style>
   </head>
   <body>
-    <h1>WAV Sender Demo (Left)</h1>
+    <h1>Demo02 WAV Sender (Left)</h1>
     <div class="panel">
       <div class="status" id="status">接続中...</div>
       <label>
@@ -94,10 +94,10 @@
     <section aria-label="setup">
       <h2>利用手順</h2>
       <ol>
-        <li><code>npm run start</code> でローカルHubを起動</li>
-        <li><code>npm run demo</code> でデモ用サーバーを起動（このページは <code>http://127.0.0.1:3100</code>）</li>
-        <li>別ブラウザで <code>http://127.0.0.1:4100</code> のWAV Rightデモを開く</li>
+        <li><code>npx @cat2151/cross-origin-hub demo02</code> でローカルHubを起動（ws://127.0.0.1:8787）</li>
+        <li>GitHub Pagesの <code>/demo02/left.html</code> と <code>/demo02/right.html</code> をブラウザ2枚で開く</li>
         <li>Hubが「接続済み」になったら send to hub をONにし、サイン波を生成</li>
+        <li>ライブラリは公開パッケージ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
       </ol>
       <p>使用API: <code>createWavHubSender({ serverUrl, maxBytes, defaultMime })</code> → <code>{ toggleSend(on), sendWav(wavBlob, metadata), hub }</code></p>
     </section>
