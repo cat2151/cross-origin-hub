@@ -188,6 +188,15 @@ export function createWavHubSender(options = {}) {
         return { sent: false, reason: 'too_large', size, maxBytes };
       }
 
+      const connected = typeof hub.getConnectionState === 'function'
+        ? hub.getConnectionState() === 'connected'
+        : hub.connectionState === 'connected';
+      if (!connected) {
+        const error = new Error('Cannot send WAV: hub is not connected.');
+        notifyError(error);
+        return { sent: false, reason: 'not_connected', size };
+      }
+
       const payload = {
         ...metadata,
         mime: metadata.mime || defaultMime,
