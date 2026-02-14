@@ -25,10 +25,10 @@ function createApp(staticPath) {
   return app;
 }
 
-const leftApp = createApp(join(__dirname, '..', 'demo01'));
-const rightApp = createApp(join(__dirname, '..', 'demo01'));
-const wavLeftApp = createApp(join(__dirname, '..', 'demo02'));
-const wavRightApp = createApp(join(__dirname, '..', 'demo02'));
+const leftApp = createApp(join(__dirname, '..', 'demo', '01_simple'));
+const rightApp = createApp(join(__dirname, '..', 'demo', '01_simple'));
+const wavLeftApp = createApp(join(__dirname, '..', 'demo', '02_wav'));
+const wavRightApp = createApp(join(__dirname, '..', 'demo', '02_wav'));
 
 leftApp.listen(LEFT_PORT, HOST, () => {
   console.log(`Left demo running at http://${HOST}:${LEFT_PORT}`);

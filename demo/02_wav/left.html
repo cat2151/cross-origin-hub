@@ -95,7 +95,7 @@
       <h2>利用手順</h2>
       <ol>
         <li><code>npx @cat2151/cross-origin-hub demo02</code> でローカルHubを起動（ws://127.0.0.1:8787）</li>
-        <li>GitHub Pagesの <code>/demo02/left.html</code> と <code>/demo02/right.html</code> をブラウザ2枚で開く</li>
+        <li>GitHub Pagesの <code>/demo/02_wav/left.html</code> と <code>/demo/02_wav/right.html</code> をブラウザ2枚で開く</li>
         <li>Hubが「接続済み」になったら send to hub をONにし、サイン波を生成</li>
         <li>ライブラリは公開パッケージ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
       </ol>
@@ -103,7 +103,7 @@
     </section>
 
     <script type="module">
-      import { createWavHubSender } from '../cross-origin-hub.js';
+      import { createWavHubSender } from '../../cross-origin-hub.js';
 
       const statusEl = document.getElementById('status');
       const sendToggle = document.getElementById('send-toggle');

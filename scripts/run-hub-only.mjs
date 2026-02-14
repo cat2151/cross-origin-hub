@@ -38,9 +38,13 @@ process.on('SIGTERM', () => {
 
 console.log(`[cross-origin-hub] started hub for ${scenario}`);
 if (scenario === 'demo01') {
-  console.log('[cross-origin-hub] open https://cat2151.github.io/cross-origin-hub/demo01/left.html and right.html (no local serving)');
+  console.log(
+    '[cross-origin-hub] open https://cat2151.github.io/cross-origin-hub/demo/01_simple/left.html and right.html (no local serving)'
+  );
 } else if (scenario === 'demo02') {
-  console.log('[cross-origin-hub] open https://cat2151.github.io/cross-origin-hub/demo02/left.html and right.html (no local serving)');
+  console.log(
+    '[cross-origin-hub] open https://cat2151.github.io/cross-origin-hub/demo/02_wav/left.html and right.html (no local serving)'
+  );
 } else {
   console.log('[cross-origin-hub] default hub mode. Try subcommands: demo01 | demo02 (GitHub Pages only)');
 }

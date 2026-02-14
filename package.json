@@ -28,8 +28,7 @@
     "scripts/build-lib.mjs",
     "scripts/build-pages.mjs",
     "index.html",
-    "demo01",
-    "demo02"
+    "demo"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
