@@ -27,8 +27,7 @@ async function build() {
 
   await Promise.all([
     cp(resolve(rootDir, 'index.html'), resolve(distDir, 'index.html')),
-    cp(resolve(rootDir, 'demo01'), resolve(distDir, 'demo01'), { recursive: true }),
-    cp(resolve(rootDir, 'demo02'), resolve(distDir, 'demo02'), { recursive: true }),
+    cp(resolve(rootDir, 'demo'), resolve(distDir, 'demo'), { recursive: true }),
     cp(libFile, resolve(distDir, 'cross-origin-hub.js')),
   ]);
 }

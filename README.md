@@ -59,9 +59,9 @@ await sendWav(wavBlob, { id: 'take-1', name: 'Kick', sampleRate: 44100, source: 
 
 ## Demos
 
-- Demo01 (text echo): run `npx @cat2151/cross-origin-hub demo01`, then open GitHub Pages `https://cat2151.github.io/cross-origin-hub/demo01/left.html` and `.../right.html` in separate windows.
-- Demo02 (WAV send/receive): run `npx @cat2151/cross-origin-hub demo02`, then open `https://cat2151.github.io/cross-origin-hub/demo02/left.html` and `.../right.html`. Left toggles `send to hub` and generates a sine-wave WAV; Right receives `wav:generated` and plays it.
+- Demo01 (text echo): run `npx @cat2151/cross-origin-hub demo01`, then open GitHub Pages `https://cat2151.github.io/cross-origin-hub/demo/01_simple/left.html` and `.../right.html` in separate windows.
+- Demo02 (WAV send/receive): run `npx @cat2151/cross-origin-hub demo02`, then open `https://cat2151.github.io/cross-origin-hub/demo/02_wav/left.html` and `.../right.html`. Left toggles `send to hub` and generates a sine-wave WAV; Right receives `wav:generated` and plays it.
 
 ### Workflow tip (demo vs library)
 
-Two GitHub Actions are split to avoid circular refs: `publish-package` builds/publishes the library, and `deploy-pages` builds demo01/demo02 to GitHub Pages using the built library artifact. Demos consume the published package—do not rely on locally served demo assets.
+Two GitHub Actions are split to avoid circular refs: `publish-package` builds/publishes the library, and `deploy-pages` builds demo/01_simple and demo/02_wav to GitHub Pages using the built library artifact. Demos consume the published package—do not rely on locally served demo assets.

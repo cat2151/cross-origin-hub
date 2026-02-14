@@ -48,7 +48,7 @@
     <div id="status">接続中...</div>
     <p>
       <a href="./right.html" target="_blank" rel="noopener">Demo01 Rightを別ブラウザで開く</a> |
-      <a href="../demo02/left.html" target="_blank" rel="noopener">Demo02 (WAV) を開く</a>
+      <a href="../02_wav/left.html" target="_blank" rel="noopener">Demo02 (WAV) を開く</a>
     </p>
 
     <form id="message-form">
@@ -59,7 +59,7 @@
     <div id="log" aria-live="polite"></div>
 
     <script type="module">
-      import CrossOriginHub from '../cross-origin-hub.js';
+      import CrossOriginHub from '../../cross-origin-hub.js';
 
       const statusEl = document.getElementById('status');
       const logEl = document.getElementById('log');
@@ -112,7 +112,7 @@
       <h2>利用手順</h2>
       <ol>
         <li><code>npx @cat2151/cross-origin-hub demo01</code> でローカルHubのみを起動（ws://127.0.0.1:8787）</li>
-        <li>GitHub Pagesにホストされた <code>/demo01/left.html</code> と <code>/demo01/right.html</code> を左右ブラウザで開く</li>
+        <li>GitHub Pagesにホストされた <code>/demo/01_simple/left.html</code> と <code>/demo/01_simple/right.html</code> を左右ブラウザで開く</li>
         <li>ページは公開ライブラリ <code>@cat2151/cross-origin-hub</code> を利用する。ローカルサーブは不要・禁止。</li>
       </ol>
     </section>
